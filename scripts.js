@@ -135,6 +135,12 @@ function operate(action) {
                 lastOperation = action;
                 break;
             }
+            else if (toEvaluate.includes("+", "-", "*", "/")) {
+                toEvaluate = evaluate() * -1;
+                output.innerHTML = toEvaluate;
+                lastOperation = action;
+                break;
+            }
             else {
                 output.innerText = "-" + output.innerText;
                 toEvaluate = "-" + toEvaluate;
@@ -150,7 +156,7 @@ function operate(action) {
                 output.innerText = "0";
                 break;
             }
-            else if (["=", "sin", "cos", "tan", "sqrt", "log", "pow"].includes(lastOperation)) {
+            else if (["=", "sin", "cos", "tan", "sqrt", "log", "pow", "(-)"].includes(lastOperation)) {
                 break;
             }
             else if (initialValue == output.innerText) {
