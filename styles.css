@@ -1,0 +1,62 @@
+body {
+  background-color:   #d5dbdb;
+}
+
+button {
+  margin: 3px;
+  width: 45px !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.btn-danger {
+  background-color: #c0392b ;
+  color: white;
+}
+
+.btn-danger[operation="CLR"] {
+  width: 112.5px !important;
+}
+
+.btn-danger[operation="DEL"] {
+  font-size: 12px !important;
+}
+
+.center {
+  padding-top: 50px;
+}
+
+.number {
+  background-color:#2471a3 ;
+  color: white;
+}
+
+.operator {
+  background-color: #145A32;
+}
+
+.trig {
+  background-color: #616A6B;
+}
+
+#calc-body {
+  width: 280px;
+  padding: 0;
+  margin: 0 auto;
+  padding: 24px;
+  background-color: black;
+  box-shadow: 4px 5px 6px 6px;
+  border-radius: 5px;
+}
+
+#output {
+  border: 1px solid black;
+  height: 48px;
+  margin-bottom: 12px;
+  border-radius: 5px;
+  padding: 5px;
+  text-align: right;
+  font-size: 24px !important;
+  color: white;
+  background-color: #839192;
+}
