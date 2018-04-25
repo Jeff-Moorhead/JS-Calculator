@@ -25,7 +25,10 @@ function operate(action) {
             lastOperation = "";
             break;
         case "=":
-            if (toEvaluate && !(["+", "-", "*", "/"].includes(
+            if (toEvaluate == "Infinity" || toEvaluate == "-Infinity") {
+                break;
+            }
+            else if (toEvaluate && !(["+", "-", "*", "/"].includes(
                 toEvaluate[toEvaluate.length - 1]))) {
                 evaluate();
                 lastOperation = action;
@@ -52,6 +55,13 @@ function operate(action) {
                 lastOperation = action;
                 break;
             }
+            else if (lastOperation == "=" || lastOperation == "sin" ||
+                lastOperation == "cos" || lastOperation == "tan" ||
+                lastOperation == "sqrt" || lastOperation == "log") {
+                    toEvaluate *= Math.E;
+                    output.innerHTML += "e";
+                    break;
+                }
             else if (["+", "-", "*", "/"].includes(toEvaluate[toEvaluate.length - 1])) {
                 output.innerHTML += "e";
                 toEvaluate += Math.E;
@@ -87,6 +97,13 @@ function operate(action) {
                 lastOperation = action;
                 break;
             }
+            else if (lastOperation == "=" || lastOperation == "sin" ||
+                lastOperation == "cos" || lastOperation == "tan" ||
+                lastOperation == "sqrt" || lastOperation == "log") {
+                    toEvaluate *= Math.PI;
+                    output.innerHTML += "&pi;";
+                    break;
+                }
             else if (toEvaluate.includes("+") || toEvaluate.includes("-") ||
                 toEvaluate.includes("*") || toEvaluate.includes("/")) {
                     toEvaluate += "*" + Math.PI;
@@ -158,15 +175,16 @@ function operate(action) {
             if (!toEvaluate) {
                 break;
             }
-            else if (["+", "-", "*", "/", "."].includes(lastOperation)) {
+            else if (["+", "-", "*", "/", ".", "pow"].includes(lastOperation)) {
                 break;
             }
             else if (eval(toEvaluate) < 0) {
                 break;
             }
             else if (eval(toEvaluate) == 0) {
-                toEvaluate = eval(toEvaluate);
+                toEvaluate = "-Infinity";
                 output.innerHTML = "-&infin;";
+                lastOperation = action;
                 break;
             }
             else {
@@ -312,7 +330,7 @@ function operate(action) {
         case "0":
             if (lastOperation == "=" || lastOperation == "sqrt" ||
                 lastOperation == "sin" || lastOperation == "cos" ||
-                lastOperation == "tan") {
+                lastOperation == "tan" || lastOperation == "log") {
                 clearAll();
                 output.innerHTML = "";
                 lastOperation = action;
@@ -339,6 +357,9 @@ function operate(action) {
                 break;
             }
             else if (!toEvaluate) {
+                break;
+            }
+            else if (toEvaluate == "Infinity" || toEvaluate == "-Infinity") {
                 break;
             }
             else if (lastOperation == ".") {
