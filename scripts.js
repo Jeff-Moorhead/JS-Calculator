@@ -314,6 +314,7 @@ function operate(action) {
                 lastOperation == "sin" || lastOperation == "cos" ||
                 lastOperation == "tan") {
                 clearAll();
+                output.innerHTML = "";
                 lastOperation = action;
             }
             else if (lastOperation == "(-)" && toEvaluate.indexOf("(") == 
@@ -362,12 +363,17 @@ function operate(action) {
                 lastOperation = action;
                 break;
             }
+        default:
+            break;
     }
 }
 
 function display(str) {
-    if (output.innerText == "0") {
+    if (output.innerText == "0" && !lastOperation) {
         output.innerText = str;
+    }
+    else if (output.innerText == "0" && lastOperation) {
+        output.innerText += str;
     }
     else {
         output.innerText += str;
