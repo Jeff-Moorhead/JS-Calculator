@@ -1,8 +1,8 @@
 var output = document.getElementById("output");
 var lastOperation = "";
-toEvaluate = "";
+var toEvaluate = "";
 var buttons = document.getElementsByTagName("button")
-initialValue = 0;
+var initialValue = 0;
 
 for (i = 0; i < buttons.length; i++) {
     buttons[i].addEventListener("click", function () {
@@ -140,6 +140,12 @@ function operate(action) {
                 break;
             }
             else if (["+", "-", "*", "/", "pow", "."].includes(lastOperation)) {
+                break;
+            }
+            else if (toEvaluate[0] == "-") {
+                toEvaluate = "(" + toEvaluate + ")**";
+                output.innerHTML = "(" + output.innerHTML + ")^";
+                lastOperation = action;
                 break;
             }
             else {
