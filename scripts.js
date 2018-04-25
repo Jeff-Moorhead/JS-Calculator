@@ -22,9 +22,11 @@ function operate(action) {
     switch (action) {
         case "CLR":
             clearAll(action);
+            lastOperation = "";
             break;
         case "=":
-            if (toEvaluate) {
+            if (toEvaluate && !(["+", "-", "*", "/"].includes(
+                toEvaluate[toEvaluate.length - 1]))) {
                 evaluate();
                 lastOperation = action;
                 break;
@@ -35,7 +37,7 @@ function operate(action) {
         case "sin":
         case "cos":
         case "tan":
-            if (toEvaluate) {
+            if (toEvaluate && !(["+", "-", "*", "/", "pow"].includes(lastOperation))) {
                 evaluateTrig(action);
                 lastOperation = action;
                 break;
@@ -46,7 +48,7 @@ function operate(action) {
         case "e":
             if (output.innerText == "0") {
                 output.innerHTML = "e";
-                toEvaluate = Math.E;
+                toEvaluate = String(Math.E);
                 lastOperation = action;
                 break;
             }
@@ -56,19 +58,26 @@ function operate(action) {
                 lastOperation = action;
                 break;
             }
+            else if (toEvaluate.includes("+") || toEvaluate.includes("-") ||
+                toEvaluate.includes("*") || toEvaluate.includes("/")) {
+                    toEvaluate += "*" + Math.E;
+                    output.innerHTML += "e";
+                    break;
+                }
             else if (toEvaluate[toEvaluate.length - 1] == ".") {
                 break;
             }
             else {
                 output.innerHTML += "e";
                 toEvaluate *= Math.E;
+                toEvaluate = String(toEvaluate);
                 lastOperation = action;
                 break;
             }
         case "pi":
             if (output.innerText == "0") {
                 output.innerHTML = "&pi;";
-                toEvaluate = Math.PI;
+                toEvaluate = String(Math.PI);
                 lastOperation = action;
                 break;
             }
@@ -78,12 +87,20 @@ function operate(action) {
                 lastOperation = action;
                 break;
             }
+            else if (toEvaluate.includes("+") || toEvaluate.includes("-") ||
+                toEvaluate.includes("*") || toEvaluate.includes("/")) {
+                    toEvaluate += "*" + Math.PI;
+                    console.log(typeof(toEvaluate));
+                    output.innerHTML += "&pi;";
+                    break;
+                }
             else if (toEvaluate[toEvaluate.length - 1] == ".") {
                 break;
             }
             else {
                 output.innerHTML += "&pi;";
                 toEvaluate *= Math.PI;
+                toEvaluate = String(toEvaluate);
                 lastOperation = action;
                 break;
             }
@@ -91,53 +108,110 @@ function operate(action) {
             if (!toEvaluate) {
                 break;
             }
-            else if (["+", "-", "*", "/", "."].includes(lastOperation)) {
+            else if (["+", "-", "*", "/", ".", "pow"].includes(lastOperation)) {
                 break;
             }
-            else if (toEvaluate.length > 0) {
-                evaluate();
-                if (toEvaluate > 0) {
-                    toEvaluate = Math.round(Math.sqrt(toEvaluate) * 1000) / 1000;
+            else if (toEvaluate.length > 0 && !(toEvaluate.includes("+") ||
+                toEvaluate.includes("-") || toEvaluate.includes("*") ||
+                toEvaluate.includes("/"))) {
+                toEvaluate = Math.round(Math.sqrt(toEvaluate) * 1000) / 1000;
+                output.innerHTML = toEvaluate;
+                lastOperation = action;
+                break;
+            }
+            else {
+                var temp = toEvaluate;
+                console.log("TEMP: " + temp);
+                toEvaluate = evaluate();
+                if (toEvaluate >= 0) {
+                    toEvaluate = String(Math.round(Math.sqrt(toEvaluate) * 1000) / 1000);
                     output.innerHTML = toEvaluate;
                     lastOperation = action;
                     break;
                 }
                 else {
+                    output.innerHTML = temp;
+                    toEvaluate = temp;
                     break;
                 }
-            }
-            else {
-                clearAll();
-                break;
             }
         case "pow":
             if (!toEvaluate) {
                 break;
             }
-            else if (["+", "-", "*", "/", "pow"].includes(lastOperation)) {
+            else if (["+", "-", "*", "/", "pow", "."].includes(lastOperation)) {
                 break;
             }
             else {
                 lastOperation = action;
-                toEvaluate
+                toEvaluate += "**";
+                output.innerHTML += "^";
+                break;
+            }
+        case "log":
+            if (!toEvaluate) {
+                break;
+            }
+            else if (["+", "-", "*", "/", "."].includes(lastOperation)) {
+                break;
+            }
+            else if (eval(toEvaluate) < 0) {
+                break;
+            }
+            else if (eval(toEvaluate) == 0) {
+                toEvaluate = eval(toEvaluate);
+                output.innerHTML = "-&infin;";
+                break;
+            }
+            else {
+                toEvaluate = Math.round(Math.log(eval(toEvaluate)) * 1000) / 1000;
+                output.innerHTML = toEvaluate;
+                lastOperation = action;
                 break;
             }
         case "(-)":
-            if (["+", "-", "*", "/"].includes(lastOperation)) {
+            if (toEvaluate == 0) {
+                break;
+            }
+            else if (["=", "sin", "cos", "tan", "log", "sqrt"].includes(lastOperation)) {
+                break;
+            }
+            else if (["+", "*", "/", "pow"].includes(lastOperation)) {
                 toEvaluate += "-"
                 output.innerText += "-";
                 lastOperation = action;
                 break;
             }
-            else if (toEvaluate[0] == "-") {
+            else if (lastOperation == "-") {
+                toEvaluate += "(-";
+                output.innerHTML = toEvaluate;
+                lastOperation = "(-)";
+                break;
+            }
+            else if (toEvaluate[0] == "-" && !(toEvaluate.includes("+") ||
+                toEvaluate.includes("-") || toEvaluate.includes("*") ||
+                toEvaluate.includes("/"))) {
                 toEvaluate = toEvaluate.slice(1);
                 output.innerHTML = toEvaluate;
                 lastOperation = action;
                 break;
             }
-            else if (toEvaluate.includes("+", "-", "*", "/")) {
+            else if (toEvaluate.includes("+") || toEvaluate.includes("-") ||
+                toEvaluate.includes("*") || toEvaluate.includes("/")) {
                 toEvaluate = evaluate() * -1;
                 output.innerHTML = toEvaluate;
+                lastOperation = action;
+                break;
+            }
+            else if (toEvaluate == Math.PI) {
+                toEvaluate *= -1;
+                output.innerHTML = "-&pi;";
+                lastOperation = action;
+                break;
+            }
+            else if (toEvaluate == Math.E) {
+                toEvaluate *= -1;
+                output.innerHTML = "-e";
                 lastOperation = action;
                 break;
             }
@@ -156,7 +230,8 @@ function operate(action) {
                 output.innerText = "0";
                 break;
             }
-            else if (["=", "sin", "cos", "tan", "sqrt", "log", "pow", "(-)"].includes(lastOperation)) {
+            else if (["=", "sin", "cos", "tan", "sqrt", "log", "(-)"].includes(
+                lastOperation)) {
                 break;
             }
             else if (initialValue == output.innerText) {
@@ -170,10 +245,28 @@ function operate(action) {
                 output.innerHTML = "0";
                 break;
             }
+            else if (lastOperation == "pi" && (toEvaluate.includes("+") ||
+                toEvaluate.includes("-") || toEvaluate.includes("*") ||
+                toEvaluate.includes("/"))) {
+                console.log("HELLO");
+                toEvaluate = toEvaluate.slice(0, toEvaluate.indexOf(Math.PI));
+                lastOperation = toEvaluate[toEvaluate.length - 1];
+                output.innerHTML = toEvaluate;
+                break;
+            }
             else if (lastOperation == "pi") {
                 toEvaluate /= Math.PI;
                 output.innerHTML = toEvaluate;
                 lastOperation = toEvaluate;
+                break;
+            }
+            else if (lastOperation == "e" && (toEvaluate.includes("+") ||
+                toEvaluate.includes("-") || toEvaluate.includes("*") ||
+                toEvaluate.includes("/"))) {
+                console.log("HELLO");
+                toEvaluate = toEvaluate.slice(0, toEvaluate.indexOf(Math.E));
+                lastOperation = toEvaluate[toEvaluate.length - 1];
+                output.innerHTML = toEvaluate;
                 break;
             }
             else if (lastOperation == "e") {
@@ -187,9 +280,13 @@ function operate(action) {
                 output.innerHTML = toEvaluate;
                 break;
             }
-            else if (typeof(lastOperation) == "Number" && toEvaluate.length == 1) {
+            else if (typeof (lastOperation) == "Number" && toEvaluate.length == 1) {
                 toEvaluate = "0";
                 output.innerHTML = toEvaluate;
+                break;
+            }
+            else if (lastOperation == "sqrt") {
+                break;
             }
             else {
                 output.innerText = output.innerText.substring(0, output.innerText.length - 1);
@@ -207,9 +304,18 @@ function operate(action) {
         case "2":
         case "3":
         case "0":
-            if (lastOperation == "=") {
+            if (lastOperation == "=" || lastOperation == "sqrt" ||
+                lastOperation == "sin" || lastOperation == "cos" ||
+                lastOperation == "tan") {
                 clearAll();
                 lastOperation = action;
+            }
+            else if (lastOperation == "(-)" && toEvaluate.indexOf("(") == 
+            toEvaluate.length - 2) {
+                toEvaluate += action + ")";
+                output.innerHTML = toEvaluate;
+                lastOperation = action;
+                break;
             }
             else if (lastOperation == "pi" || lastOperation == "e") {
                 break;
@@ -222,12 +328,15 @@ function operate(action) {
         case "-":
         case "*":
         case "/":
-            if (["+", "-", "*", "/"].includes(toEvaluate[toEvaluate.length - 1])) {
+            if (["+", "*", "/"].includes(toEvaluate[toEvaluate.length - 1])) {
                 break;
             }
             else if (!toEvaluate) {
                 break;
             }
+            else if (lastOperation == ".") {
+                break;
+            } 
             else {
                 display(action);
                 toEvaluate += action;
@@ -236,6 +345,9 @@ function operate(action) {
             }
         case ".":
             if (toEvaluate[toEvaluate.length - 1] == ".") {
+                break;
+            }
+            else if (lastOperation == "pi" || lastOperation == "e") {
                 break;
             }
             else {
@@ -262,11 +374,17 @@ function clearAll() {
 }
 
 function evaluate() {
-    output.innerText = Math.round(Number(eval(toEvaluate)) * 1000) / 1000;
-    toEvaluate = output.innerHTML;
-    console.log("Result: " + output.innerText);
-    initialValue = Number(toEvaluate);
-    return toEvaluate;
+    toEvaluate = Math.round(Number(eval(toEvaluate)) * 1000) / 1000;
+    console.log(toEvaluate);
+    if (toEvaluate == "Infinity") {
+        output.innerHTML = "&infin;";
+    }
+    else {
+        output.innerHTML = toEvaluate;
+        console.log("Result: " + output.innerText);
+        initialValue = Number(toEvaluate);
+        return toEvaluate;
+    }
 }
 
 function evaluateTrig(trigFunction) {
@@ -282,7 +400,7 @@ function evaluateTrig(trigFunction) {
             output.innerHTML = toEvaluate;
             break;
         case "tan":
-            if (Math.round(Math.cos(result)) == 0) {
+            if (Math.round(Math.cos(result) * 1000) / 1000 == 0) {
                 output.innerHTML = "&infin;";
                 toEvaluate = 0;
             }

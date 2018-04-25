@@ -14,6 +14,9 @@ button {
   color: white;
 }
 
+.btn-danger:hover {
+  background-color: #c0392b;
+}
 .btn-danger[operation="CLR"] {
   width: 112.5px !important;
 }
@@ -27,16 +30,28 @@ button {
 }
 
 .number {
-  background-color:#2471a3 ;
+  background-color:#2471a3;
   color: white;
+}
+
+.number:hover {
+  background-color: #2471a3;
 }
 
 .operator {
   background-color: #145A32;
 }
 
+.operator:hover {
+  background-color: #145a32;
+}
+
 .trig {
   background-color: #616A6B;
+}
+
+.trig:hover {
+  background-color: #616a6b;
 }
 
 #calc-body {
