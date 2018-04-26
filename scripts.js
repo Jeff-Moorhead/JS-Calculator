@@ -7,7 +7,7 @@ var initialValue = 0;
 for (i = 0; i < buttons.length; i++) {
     buttons[i].addEventListener("click", function () {
         var operation = this.getAttribute("operation");
-        if (output.innerText.length > 16) {
+        if (output.innerText.length > 14) {
             clearAll();
         }
         else {
