@@ -1,3 +1,5 @@
+/* Bugs: Overflow causes leading zero */
+
 var output = document.getElementById("output");
 var lastOperation = "";
 var toEvaluate = "";
@@ -8,6 +10,7 @@ for (i = 0; i < buttons.length; i++) {
     buttons[i].addEventListener("click", function () {
         var operation = this.getAttribute("operation");
         if (output.innerText.length > 14) {
+            lastOperation = "overflow";
             clearAll();
         }
         else {
@@ -175,7 +178,7 @@ function operate(action) {
             if (!toEvaluate) {
                 break;
             }
-            else if (["+", "-", "*", "/", ".", "pow"].includes(lastOperation)) {
+            else if (["+", "-", "*", "/", ".", "pow", "(-)"].includes(lastOperation)) {
                 break;
             }
             else if (eval(toEvaluate) < 0) {
@@ -334,6 +337,12 @@ function operate(action) {
                 clearAll();
                 output.innerHTML = "";
                 lastOperation = action;
+            }
+            else if (lastOperation == "overflow") {
+                output.innerHTML = action;
+                toEvaluate += action;
+                lastOperation = action;
+                break;
             }
             else if (lastOperation == "(-)" && toEvaluate.indexOf("(") == 
             toEvaluate.length - 2) {
